@@ -20,9 +20,12 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Email
-    @NotBlank
+    @Email(message = "Invalid email format!")
+    @NotBlank(message = "Email can not be blank!")
     private String email;
+
+    @NotBlank(message = "Name can not be blank!")
+    private String name;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private Set<CreditCard> creditCards;

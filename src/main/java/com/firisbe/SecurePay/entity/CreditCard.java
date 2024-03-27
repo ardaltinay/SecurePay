@@ -1,5 +1,6 @@
 package com.firisbe.SecurePay.entity;
 
+import com.firisbe.SecurePay.util.EncryptionUtil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -7,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -21,12 +21,10 @@ public class CreditCard {
     private Long id;
 
     @NotBlank
-    private String cardNumber;
+    @Convert(converter = EncryptionUtil.class)
+    private String encryptedCardNumber;
 
     private Long cvvNumber;
-
-    @NotBlank
-    private String encryptedCardInfo;
 
     private LocalDate expireDate;
 
