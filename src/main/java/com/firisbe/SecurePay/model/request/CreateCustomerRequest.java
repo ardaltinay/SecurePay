@@ -1,4 +1,4 @@
 package com.firisbe.SecurePay.model.request;
 
-public record CreateCustomerRequest(String email) {
+public record CreateCustomerRequest(String customerName, String email) {
 }
