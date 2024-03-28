@@ -11,12 +11,6 @@ import java.util.List;
 @Component
 public class PaymentMapper {
 
-    public PaymentDto toDto(CreatePaymentRequest request) {
-        return PaymentDto.builder()
-                .amount(request.getAmount())
-                .build();
-    }
-
     public Payment toEntity(CreatePaymentRequest request) {
         return Payment.builder()
                 .amount(request.getAmount())

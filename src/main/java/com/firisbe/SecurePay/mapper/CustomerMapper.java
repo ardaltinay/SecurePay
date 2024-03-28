@@ -19,14 +19,6 @@ public class CustomerMapper {
                 .build();
     }
 
-    public CustomerDto toDto(CreateCustomerRequest request) {
-        return CustomerDto.builder()
-                .id(null)
-                .name(request.getCustomerName())
-                .email(request.getEmail())
-                .build();
-    }
-
     public CustomerDto entityToDto(Customer customer) {
         return CustomerDto.builder()
                 .id(customer.getId())
