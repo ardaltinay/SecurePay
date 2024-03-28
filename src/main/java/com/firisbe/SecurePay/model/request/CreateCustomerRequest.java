@@ -1,4 +1,16 @@
 package com.firisbe.SecurePay.model.request;
 
-public record CreateCustomerRequest(String customerName, String email) {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+
+@Data
+public class CreateCustomerRequest {
+
+    @NotBlank(message = "Name can not be blank!")
+    private String customerName;
+
+    @Email(message = "Invalid email format!")
+    @NotBlank(message = "Email can not be blank!")
+    private String email;
 }

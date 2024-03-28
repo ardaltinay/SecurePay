@@ -1,11 +1,10 @@
 package com.firisbe.SecurePay.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.firisbe.SecurePay.util.EncryptionUtil;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -14,22 +13,25 @@ import java.util.Set;
 @Table(name = "credit_cards")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
+@Builder
 public class CreditCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     @Convert(converter = EncryptionUtil.class)
     private String encryptedCardNumber;
 
     private Long cvvNumber;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDate expireDate;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
     @OneToMany(mappedBy = "creditCard", cascade = CascadeType.ALL)

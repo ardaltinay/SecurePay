@@ -34,6 +34,12 @@ public class GenericExceptionHandler extends ResponseEntityExceptionHandler {
         return buildErrorResponseEntity(new GenericErrorResponse(HttpStatus.BAD_REQUEST, errors, LocalDateTime.now()));
     }
 
+    @ExceptionHandler(AlreadyExistException.class)
+    protected ResponseEntity<Object> handleAlreadyExistException(AlreadyExistException e) {
+        GenericErrorResponse errorResponse = new GenericErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage(), LocalDateTime.now());
+        return buildErrorResponseEntity(errorResponse);
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     protected ResponseEntity<Object> handleUserNotFoundException(ResourceNotFoundException e) {
         GenericErrorResponse errorResponse = new GenericErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), LocalDateTime.now());
@@ -42,7 +48,7 @@ public class GenericExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(GenericCrudException.class)
     protected ResponseEntity<Object> handleGenericCrudException(GenericCrudException e) {
-        GenericErrorResponse errorResponse = new GenericErrorResponse(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage(), LocalDateTime.now());
+        GenericErrorResponse errorResponse = new GenericErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), LocalDateTime.now());
         return buildErrorResponseEntity(errorResponse);
     }
 
