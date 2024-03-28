@@ -9,11 +9,9 @@ import com.firisbe.SecurePay.mapper.CreditCardMapper;
 import com.firisbe.SecurePay.mapper.CustomerMapper;
 import com.firisbe.SecurePay.model.request.CreateCustomerRequest;
 import com.firisbe.SecurePay.model.request.UpdateCreditCardInfoRequest;
-import com.firisbe.SecurePay.model.response.GenericSuccessResponse;
 import com.firisbe.SecurePay.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
