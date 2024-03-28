@@ -17,14 +17,6 @@ public class CreditCardService {
 
     private final CreditCardRepository repository;
 
-    private final CreditCardMapper mapper;
-
-
-    public CreditCard addCreditCard(@RequestBody UpdateCreditCardInfoRequest request) {
-        CreditCard creditCard = mapper.toEntity(request);
-        return repository.save(creditCard);
-    }
-
     protected CreditCard findById(Long id) {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Credit Card not found with given id: " + id));
     }
