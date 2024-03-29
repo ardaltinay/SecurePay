@@ -4,6 +4,7 @@ import com.firisbe.SecurePay.dto.PaymentDto;
 import com.firisbe.SecurePay.entity.CreditCard;
 import com.firisbe.SecurePay.entity.Customer;
 import com.firisbe.SecurePay.entity.Payment;
+import com.firisbe.SecurePay.exception.CustomerCreditCardDidNotMatchException;
 import com.firisbe.SecurePay.mapper.PaymentMapper;
 import com.firisbe.SecurePay.model.request.CreatePaymentRequest;
 import com.firisbe.SecurePay.repository.PaymentRepository;
@@ -19,6 +20,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -60,9 +62,9 @@ class PaymentServiceTest {
                 customer.getName(), customer.getEmail(),
                 creditCard.getEncryptedCardNumber(), creditCard.getCvvNumber(),
                 creditCard.getExpireDate());
+        customer.setCreditCards(Set.of(creditCard));
 
         when(customerService.findEntityByCustomerId(request.getCustomerId())).thenReturn(customer);
-        when(creditCardService.findById(request.getCreditCardId())).thenReturn(creditCard);
         when(paymentMapper.toEntity(request)).thenReturn(payment);
         when(paymentRepository.save(payment)).thenReturn(payment);
         when(paymentMapper.entityToDto(payment)).thenReturn(paymentDto);
@@ -75,11 +77,28 @@ class PaymentServiceTest {
         assertEquals(paymentDto.getId(), result.getId());
 
         verify(customerService).findEntityByCustomerId(request.getCustomerId());
-        verify(creditCardService).findById(request.getCreditCardId());
         verify(paymentMapper).toEntity(request);
         verify(paymentRepository).save(payment);
         verify(paymentMapper).entityToDto(payment);
+    }
 
+    @Test
+    void addPayment_WhenCreditCardDidNotMatch_ShouldThrowCustomerCreditCardDidNotMatchException() {
+        // given
+        CreatePaymentRequest request = new CreatePaymentRequest(1L, 1L,
+                new BigDecimal(500));
+        Customer customer = new Customer(1L, "arda@gmail.com", "Arda",
+                new HashSet<>(), new HashSet<>());
+        CreditCard creditCard = new CreditCard(2L, "123412341234", 555L,
+                LocalDate.MAX, customer, new HashSet<>());
+        Payment payment = new Payment(1L, new BigDecimal(500), LocalDate.MAX, customer, creditCard);
+        customer.setCreditCards(Set.of(creditCard));
+
+        when(customerService.findEntityByCustomerId(request.getCustomerId())).thenReturn(customer);
+        when(paymentMapper.toEntity(request)).thenReturn(payment);
+
+        // then
+        assertThrows(CustomerCreditCardDidNotMatchException.class, () -> paymentService.addPayment(request));
     }
 
     @Test

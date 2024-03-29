@@ -46,6 +46,12 @@ public class GenericExceptionHandler extends ResponseEntityExceptionHandler {
         return buildErrorResponseEntity(errorResponse);
     }
 
+    @ExceptionHandler(CustomerCreditCardDidNotMatchException.class)
+    protected ResponseEntity<Object> handleCustomerCreditCardDidNotMatchException(CustomerCreditCardDidNotMatchException e) {
+        GenericErrorResponse errorResponse = new GenericErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage(), LocalDateTime.now());
+        return buildErrorResponseEntity(errorResponse);
+    }
+
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleGenericException(Exception e) {
         GenericErrorResponse errorResponse = new GenericErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), LocalDateTime.now());

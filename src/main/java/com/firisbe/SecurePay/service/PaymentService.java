@@ -4,10 +4,12 @@ import com.firisbe.SecurePay.dto.PaymentDto;
 import com.firisbe.SecurePay.entity.CreditCard;
 import com.firisbe.SecurePay.entity.Customer;
 import com.firisbe.SecurePay.entity.Payment;
+import com.firisbe.SecurePay.exception.CustomerCreditCardDidNotMatchException;
 import com.firisbe.SecurePay.mapper.PaymentMapper;
 import com.firisbe.SecurePay.model.request.CreatePaymentRequest;
 import com.firisbe.SecurePay.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentService {
 
     private final PaymentRepository repository;
@@ -31,8 +34,12 @@ public class PaymentService {
 
     public PaymentDto addPayment(CreatePaymentRequest request) {
         Customer customer = customerService.findEntityByCustomerId(request.getCustomerId());
-        CreditCard creditCard = creditCardService.findById(request.getCreditCardId());
         Payment payment = mapper.toEntity(request);
+        CreditCard creditCard = customer.getCreditCards().stream()
+                .filter(card -> request.getCreditCardId().equals(card.getId())).findAny().orElseThrow(() -> {
+                    log.error("The Customer's credit card did not match the given credit card information!");
+                    return new CustomerCreditCardDidNotMatchException("The Customer's credit card did not match the given credit card information! Please try another credit card.");
+                });
         creditCard.getPayments().add(payment);
         payment.setCreditCard(creditCard);
         payment.setCustomer(customer);
