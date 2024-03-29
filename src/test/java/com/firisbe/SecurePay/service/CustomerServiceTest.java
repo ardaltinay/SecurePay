@@ -162,11 +162,15 @@ class CustomerServiceTest {
                 544L, LocalDate.MAX);
         Customer customer = new Customer(customerId, "arda@gmail.com", "Arda",
                 Collections.emptySet(), Collections.emptySet());
+        CustomerDto customerDto = new CustomerDto(customerId, "arda@gmail.com", "Arda",
+                Collections.emptySet(), Collections.emptySet());
         CreditCard existingCreditCard = new CreditCard(1L, "1234567890123456", 544L,
                 LocalDate.MAX, customer, Collections.emptySet());
-        customer.setCreditCards(Set.of(existingCreditCard));
+        customerDto.setCreditCards(Set.of(existingCreditCard));
 
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
+        when(customerRepository.findAll()).thenReturn(List.of(customer));
+        when(customerMapper.entityListToDtoList(List.of(customer))).thenReturn(List.of(customerDto));
 
         // then
         assertThrows(AlreadyExistException.class, () -> customerService.updateCreditCardInfoByCustomerId(request));

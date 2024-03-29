@@ -67,8 +67,8 @@ public class CustomerService {
 
     private Boolean isCardNumberAlreadyExist(String cardNumber) {
         List<CustomerDto> customers = getAllCustomers();
-        return customers.stream().flatMap(customer -> customer.getCreditCards().stream())
-                .anyMatch(creditCard -> cardNumber.equals(creditCard.getEncryptedCardNumber()));
+        return customers.stream().anyMatch(customer ->
+                customer.getCreditCards().stream().anyMatch(creditCard -> cardNumber.equals(creditCard.getEncryptedCardNumber())));
     }
 
     public CustomerDto findByCustomerId(Long id) {
