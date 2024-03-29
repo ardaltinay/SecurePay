@@ -2,6 +2,7 @@ package com.firisbe.SecurePay.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.firisbe.SecurePay.util.EncryptionUtil;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Convert;
@@ -44,10 +45,11 @@ public class CreditCard {
     private LocalDate expireDate;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "creditCard", cascade = CascadeType.ALL)
     private Set<Payment> payments;
 }

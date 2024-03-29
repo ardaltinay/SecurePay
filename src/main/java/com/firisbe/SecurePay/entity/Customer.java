@@ -1,5 +1,6 @@
 package com.firisbe.SecurePay.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -37,5 +38,6 @@ public class Customer {
     private Set<CreditCard> creditCards;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Payment> payments;
 }
