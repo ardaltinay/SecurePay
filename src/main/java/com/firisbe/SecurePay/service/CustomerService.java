@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +39,7 @@ public class CustomerService {
 
     public CustomerDto addCustomer(CreateCustomerRequest request) {
         if (isEmailAlreadyExist(request.getEmail())) {
-            log.warn("The email is being used by another user! Please enter a different email address.");
+            log.error("The email is being used by another user! Please enter a different email address.");
             throw new AlreadyExistException("The email is being used by another user!");
         }
         Customer savedCustomer = customerRepository.save(customerMapper.toEntity(request));
@@ -56,7 +55,7 @@ public class CustomerService {
     public CustomerDto updateCreditCardInfoByCustomerId(UpdateCreditCardInfoRequest request) {
         Customer customer = findEntityByCustomerId(request.getCustomerId());
         CreditCard creditCard = creditCardMapper.toEntity(request);
-        if (isCardNumberAlreadyExist(customer.getCreditCards(), request.getCardNumber())) {
+        if (isCardNumberAlreadyExist(request.getCardNumber())) {
             log.error("Given card number: {} is already exist", request.getCardNumber());
             throw new AlreadyExistException("Given card number is already exist");
         }
@@ -66,8 +65,10 @@ public class CustomerService {
         return customerMapper.entityToDto(updatedCustomerWithCreditCardInfo);
     }
 
-    private Boolean isCardNumberAlreadyExist(Set<CreditCard> creditCards, String cardNumber) {
-        return creditCards.stream().anyMatch(creditCard -> creditCard.getEncryptedCardNumber().equals(cardNumber));
+    private Boolean isCardNumberAlreadyExist(String cardNumber) {
+        List<CustomerDto> customers = getAllCustomers();
+        return customers.stream().flatMap(customer -> customer.getCreditCards().stream())
+                .anyMatch(creditCard -> cardNumber.equals(creditCard.getEncryptedCardNumber()));
     }
 
     public CustomerDto findByCustomerId(Long id) {

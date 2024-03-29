@@ -2,12 +2,9 @@ package com.firisbe.SecurePay.service;
 
 import com.firisbe.SecurePay.entity.CreditCard;
 import com.firisbe.SecurePay.exception.ResourceNotFoundException;
-import com.firisbe.SecurePay.mapper.CreditCardMapper;
-import com.firisbe.SecurePay.model.request.UpdateCreditCardInfoRequest;
 import com.firisbe.SecurePay.repository.CreditCardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
